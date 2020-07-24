@@ -16,4 +16,13 @@ Complexity here is due to recursive rather than iterative repetition. Each time 
 
 ## Exercise II
 
+The question indicates that the goal is to minimize "dropped + broken" eggs. This is not clear as to whether *all* dropped eggs are to be counted, or whether only eggs that are dropped *and* broken are to be minimized.
 
+The solution for finding f in the latter case (minimizing only eggs which are dropped *and broken*) is trivial. Start from the first floor, drop an egg, then proceed to the next floor iff the egg does not break. The first floor where the dropped egg breaks is floor f, and only one egg has been broken. The only condition where f can be confirmed without breaking *any* eggs is if f=n+1 (i.e. the egg will survive a fall from any floor), which will be confirmed when an egg dropped from floor n does not break.
+
+The approach changes if the goal is to minimize the total number of eggs *dropped*. In this case, the goal is to find f with the smallest possible number of drops, which is accomplished by maximizing the information gained with each egg drop, which is the same as maximizing the expectation value of the number of possible values for f eliminated with each drop. The approach is as follows:
+1) Choose a floor from which to drop the next egg. This should be the average of the floor numbers of the highest and lowest remaining possibilities (which on the first selection will be the lowest and highest floors). Rounding down in cases where an even number of floors remain improves the end behavior of the algorithm, and slightly improves the expectation value of the number of floors excluded.
+2) If the egg breaks, eliminate all higher floors from the range of possible floors, since the lowest height from which the egg will break (f, what is to be found) is at or below the current floor.
+3) If the egg does *not* break, eliminate all lower floors *and* the current floor from the range of possible floors, since the lowest height from which the egg will break must be higher.
+4) After this elimination, if only one floor remains, that is floor f.
+5) If more than one floor remains, go back to step 1 with the new (reduced) range of possible floors. Continue until the algorithm completes at step 4.
