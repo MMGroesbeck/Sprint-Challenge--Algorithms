@@ -91,13 +91,59 @@ class SortingRobot:
         Returns True if the robot's light is on and False otherwise.
         """
         return self._light == "ON"
+    
+    def get_smallest(self):
+        # Moves through storage, swapping for new item if new item is smaller
+        # Ends when robot reaches end of storage
+        # At end of execution, robot will have smallest item after gap.
+        while self.can_move_right():
+            self.move_right()
+            if self.compare_item() == 1:
+                self.swap_item()
+
+    def take_to_space(self):
+        # Robot takes currently held item to place in storage with None, 
+        # places item there. Robot now holding None
+        while self.compare_item() is not None:
+            self.move_left()
+            if self.compare_item() == None:
+                self.swap_item()
+    
+    def get_next(self):
+        # If the robot is at the end of storage, turns light off
+        # (to indicate sort has completed)
+        if not self.can_move_right():
+            self.set_light_off()
+            return
+        # Robot moves right. If at end of storage, turns off light.
+        # If still not at end of storage,
+        # picks up next item (leaving None in its place)
+        else:
+            self.move_right()
+            if not self.can_move_right():
+                self.set_light_off()
+                return
+            else:
+                self.swap_item()
 
     def sort(self):
         """
         Sort the robot's list.
         """
-        # Fill this out
-        pass
+        # First pass: selection sort
+        if not self.can_move_right():
+            return
+        self.swap_item()
+        self.set_light_on()
+        # Light will be turned off in get_next)
+        while self.light_is_on(): # i.e. while sort still in progress
+            # Robot finds smallest item in unsorted part of storage
+            self.get_smallest()
+            # Robot places smallest item in open space
+            self.take_to_space()
+            # Robot moves to next item, picks it up, leaving space
+            self.get_next()
+        
 
 
 if __name__ == "__main__":
